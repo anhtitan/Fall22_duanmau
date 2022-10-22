@@ -44,6 +44,7 @@ public class ViewBanHang extends javax.swing.JFrame {
         groupRd();
         tbSanPham.getTableHeader().setReorderingAllowed(false);
         loadHDCT(hoaDonCTSer.getAll());
+
     }
 
     private void loadSP(List<ChiTietSP> list) {
@@ -452,7 +453,7 @@ public class ViewBanHang extends javax.swing.JFrame {
     }//GEN-LAST:event_tbHoaDonChiTietMouseClicked
 
     private void txtTienKhachDua_hdCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtTienKhachDua_hdCaretUpdate
-                Double tongTien = 0.0;
+        Double tongTien = 0.0;
         Double tienKhachDua = 0.0;
         try {
             tongTien = Double.parseDouble(txtTongTien.getText().toString());
