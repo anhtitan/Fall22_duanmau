@@ -1,4 +1,3 @@
-
 package Duanmau.DomainModels;
 
 /**
@@ -6,35 +5,36 @@ package Duanmau.DomainModels;
  * @author AnhTiTan
  */
 public class HoaDonChiTiet {
-    private String idHoaDon;
-    private String idChiTietSP;
+
+    private HoaDon hoaDon;
+    private ChiTietSP chiTietSP;
     private int soLuong;
     private double donGia;
 
     public HoaDonChiTiet() {
     }
 
-    public HoaDonChiTiet(String idHoaDon, String idChiTietSP, int soLuong, double donGia) {
-        this.idHoaDon = idHoaDon;
-        this.idChiTietSP = idChiTietSP;
+    public HoaDonChiTiet(HoaDon hoaDon, ChiTietSP chiTietSP, int soLuong, double donGia) {
+        this.hoaDon = hoaDon;
+        this.chiTietSP = chiTietSP;
         this.soLuong = soLuong;
         this.donGia = donGia;
     }
 
-    public String getIdHoaDon() {
-        return idHoaDon;
+    public HoaDon getHoaDon() {
+        return hoaDon;
     }
 
-    public void setIdHoaDon(String idHoaDon) {
-        this.idHoaDon = idHoaDon;
+    public void setHoaDon(HoaDon hoaDon) {
+        this.hoaDon = hoaDon;
     }
 
-    public String getIdChiTietSP() {
-        return idChiTietSP;
+    public ChiTietSP getChiTietSP() {
+        return chiTietSP;
     }
 
-    public void setIdChiTietSP(String idChiTietSP) {
-        this.idChiTietSP = idChiTietSP;
+    public void setChiTietSP(ChiTietSP chiTietSP) {
+        this.chiTietSP = chiTietSP;
     }
 
     public int getSoLuong() {
@@ -54,9 +54,3 @@ public class HoaDonChiTiet {
     }
     
 }
-/*
-IdHoaDon UNIQUEIDENTIFIER,
-IdChiTietSP UNIQUEIDENTIFIER,	
-SoLuong INT,
-DonGia DECIMAL(20,0) DEFAULT 0,
-*/

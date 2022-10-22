@@ -2,14 +2,18 @@ package Duanmau.View;
 
 import Duanmau.DomainModels.ChiTietSP;
 import Duanmau.DomainModels.HoaDon;
+import Duanmau.DomainModels.HoaDonChiTiet;
 import Duanmau.DomainModels.SanPham;
 import Duanmau.Service.ChiTietSPService;
+import Duanmau.Service.HoaDonCTService;
 import Duanmau.Service.HoaDonService;
 import Duanmau.Service.SanPhamService;
 import Duanmau.Service.impl.IChiTietSPServicerImpl;
+import Duanmau.Service.impl.IHoaDonChiTietImpl;
 import Duanmau.Service.impl.IHoaDonServiceImpl;
 import Duanmau.Service.impl.ISanPhamServiceImpl;
 import Duanmau.Utilies.Helper;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.swing.ButtonGroup;
@@ -27,8 +31,10 @@ public class ViewBanHang extends javax.swing.JFrame {
      */
     private ChiTietSPService sanPhamSer = new IChiTietSPServicerImpl();
     private HoaDonService hoaDonSer = new IHoaDonServiceImpl();
+    private HoaDonCTService hoaDonCTSer = new IHoaDonChiTietImpl();
     private DefaultTableModel tblModel;
     private Helper helper = new Helper();
+
     public ViewBanHang() {
         initComponents();
         setLocationRelativeTo(null);
@@ -37,14 +43,13 @@ public class ViewBanHang extends javax.swing.JFrame {
         rdALL.setSelected(true);
         groupRd();
         tbSanPham.getTableHeader().setReorderingAllowed(false);
-
+        loadHDCT(hoaDonCTSer.getAll());
     }
 
     private void loadSP(List<ChiTietSP> list) {
         tblModel = (DefaultTableModel) tbSanPham.getModel();
         tblModel.setRowCount(0);
         int i = 1;
-//        
         for (ChiTietSP x : list) {
             tblModel.addRow(new Object[]{i++, x.getSanPham().getTen(), x.getSoLuongTon(), x.getGiaBan(), x.getMoTa()});
         }
@@ -58,12 +63,43 @@ public class ViewBanHang extends javax.swing.JFrame {
             tblModel.addRow(new Object[]{i++, x.getMa(), x.getNgayTao(), x.setTT()});
         }
     }
+
+    private void loadHDCT(List<HoaDonChiTiet> list) {
+        tblModel = (DefaultTableModel) tbHoaDonChiTiet.getModel();
+        tblModel.setRowCount(0);
+        int i = 1;
+        for (HoaDonChiTiet x : list) {
+            tblModel.addRow(new Object[]{i++, x.getHoaDon().getMa(), x.getSoLuong(), x.getDonGia(), x.getSoLuong() * x.getDonGia()});
+
+        }
+    }
+
     ButtonGroup butGroup = new ButtonGroup();
 
     private void groupRd() {
         butGroup.add(rdALL);
         butGroup.add(rdChuaTT);
         butGroup.add(rdDaTT);
+    }
+
+    private void loadTextHDCT() {
+        int row = tbHoaDonChiTiet.getSelectedRow();
+        HoaDonChiTiet hdct = hoaDonCTSer.getAll().get(row);
+        txtMaHD_hd.setText(hdct.getHoaDon().getMa());
+        txtNgayTao_hd.setText(hdct.getHoaDon().getNgayTao() + "");
+        txtTongTien.setText(tbHoaDonChiTiet.getValueAt(row, 4).toString());
+        //  BigDecimal tienKhach = BigDecimal.valueOf(Double.parseDouble(txtTienKhachDua_hd.getText()));
+        // BigDecimal tongTien = (BigDecimal) tbHoaDonChiTiet.getValueAt(row, 4);
+
+        Double tongTien = 0.0;
+        Double tienKhachDua = 0.0;
+        try {
+            tongTien = Double.parseDouble(txtTongTien.getText().toString());
+            tienKhachDua = Double.parseDouble(txtTienKhachDua_hd.getText());
+        } catch (Exception e) {
+        }
+        txtTienThua_hd.setText(tienKhachDua - tongTien + "");
+        //txtTienThua_hd.setText(tienKhach-tongTien);
     }
 
     /**
@@ -131,9 +167,14 @@ public class ViewBanHang extends javax.swing.JFrame {
 
             },
             new String [] {
-                "STT", "Tên SP", "Số lượng", "Đơn giá", "Thành tiền"
+                "STT", "Mã HĐ", "Số lượng", "Đơn giá", "Thành tiền"
             }
         ));
+        tbHoaDonChiTiet.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbHoaDonChiTietMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbHoaDonChiTiet);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -205,6 +246,12 @@ public class ViewBanHang extends javax.swing.JFrame {
         jLabel5.setText("Tổng tiền");
 
         txtTongTien.setEditable(false);
+
+        txtTienKhachDua_hd.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                txtTienKhachDua_hdCaretUpdate(evt);
+            }
+        });
 
         jLabel6.setText("Tiền Khách đưa");
 
@@ -376,12 +423,13 @@ public class ViewBanHang extends javax.swing.JFrame {
                 continue;
             }
         }
-        if(hoaDonSer.addHD(hd)){
+        if (hoaDonSer.addHD(hd)) {
             helper.alert(this, "Thêm Hoá Đơn Thành Công");
-        }else{
+        } else {
             helper.error(this, "Thêm hoá đơn mới thất bại");
-            
-        }loadHD(hoaDonSer.getAll());
+
+        }
+        loadHD(hoaDonSer.getAll());
     }//GEN-LAST:event_btnTaoHoaDonActionPerformed
 
     private void rdALLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdALLActionPerformed
@@ -398,6 +446,21 @@ public class ViewBanHang extends javax.swing.JFrame {
         int e = 1;
         loadHD((List<HoaDon>) hoaDonSer.getHDbyTT(e));
     }//GEN-LAST:event_rdDaTTActionPerformed
+
+    private void tbHoaDonChiTietMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbHoaDonChiTietMouseClicked
+        loadTextHDCT();
+    }//GEN-LAST:event_tbHoaDonChiTietMouseClicked
+
+    private void txtTienKhachDua_hdCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtTienKhachDua_hdCaretUpdate
+                Double tongTien = 0.0;
+        Double tienKhachDua = 0.0;
+        try {
+            tongTien = Double.parseDouble(txtTongTien.getText().toString());
+            tienKhachDua = Double.parseDouble(txtTienKhachDua_hd.getText());
+        } catch (Exception e) {
+        }
+        txtTienThua_hd.setText(tienKhachDua - tongTien + "");
+    }//GEN-LAST:event_txtTienKhachDua_hdCaretUpdate
     public static void main(String[] args) {
         new ViewBanHang().setVisible(true);
     }

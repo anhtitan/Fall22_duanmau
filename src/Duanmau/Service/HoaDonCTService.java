@@ -4,10 +4,16 @@
  */
 package Duanmau.Service;
 
+import Duanmau.DomainModels.HoaDonChiTiet;
+import java.util.List;
+
 /**
  *
  * @author AnhTiTan
  */
 public interface HoaDonCTService {
-    
+
+    public List<HoaDonChiTiet> getAll();
+
+    public Boolean addHDCT(HoaDonChiTiet hdct);
 }
